@@ -1,10 +1,20 @@
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useAuth } from "./useAuth.js";
 
 export function useLogin() {
     const username = ref("");
     const password = ref("");
+    const error = ref(null);
     const router = useRouter();
+    const { isAuthenticated } = useAuth();
+
+    onMounted(() => {
+        if (isAuthenticated.value) {
+            router.push("/orders");
+        }
+    });
+
 
     const handleSubmit = async () => {
         try {
@@ -14,16 +24,19 @@ export function useLogin() {
                 body: JSON.stringify({ username: username.value, password: password.value }),
             });
 
-            if (response.ok) {
-                alert("Вход выполнен!");
-                router.push("/dashboard"); // Перенаправляем на защищённую страницу
-            } else {
-                alert("Ошибка входа");
+            if (!response.ok) {
+                throw new Error("Ошибка входа");
             }
+
+            const data = await response.json();
+            localStorage.setItem("authToken", data.token);
+
+            alert("Вход выполнен!");
+            router.push("/orders");
         } catch (err) {
-            alert("Ошибка сервера");
+            error.value = err.message;
         }
     };
 
-    return { username, password, handleSubmit };
+    return { username, password, error, handleSubmit };
 }
