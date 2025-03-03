@@ -1,6 +1,10 @@
 <script>
+import { useAuth } from "../src/composables/useAuth";
+
 export default {
-  name: "App",
+  setup() {
+    return useAuth();
+  },
 };
 </script>
 
