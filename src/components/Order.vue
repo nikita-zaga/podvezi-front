@@ -1,5 +1,19 @@
 <template>
   <div class="min-h-screen w-screen bg-gray-100 p-4">
+
+    <!-- Иконка выхода -->
+    <button @click="logout" class="logout-button" title="Выйти">
+      <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          class="logout-icon"
+      >
+        <path fill-rule="evenodd" d="M3 3.75a.75.75 0 01.75-.75h12a.75.75 0 010 1.5H3.75v16.5h12a.75.75 0 010 1.5h-12A1.75 1.75 0 012 20.25V3.75z" clip-rule="evenodd" />
+        <path fill-rule="evenodd" d="M21.03 11.47a.75.75 0 010 1.06l-4.752 4.752a.75.75 0 01-1.06-1.06l3.22-3.22H9a.75.75 0 010-1.5h9.44l-3.22-3.22a.75.75 0 011.06-1.06l4.75 4.752z" clip-rule="evenodd" />
+      </svg>
+    </button>
+
     <!-- Заголовок страницы -->
     <header class="text-center mb-6">
       <h1 class="text-3xl font-bold text-gray-800">Поиск объявлений о поездках</h1>
@@ -66,14 +80,17 @@
 
 <script>
 import useUserOrder from '../composables/userOrders';
+import { useAuth } from "../composables/useAuth";
 
 export default {
   setup() {
     // Импорт логики
     const {from, to, trips, loading, searchTrips} = useUserOrder();
+    const { logout } = useAuth();
 
     // Экспорт данных и методов в шаблон
     return {
+      logout,
       from,
       to,
       trips,
@@ -85,5 +102,25 @@ export default {
 </script>
 
 <style scoped>
-/* Добавлено минимальное оформление */
+.logout-button {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.logout-icon {
+  width: 32px;
+  height: 32px;
+  color: #ff4d4f;
+  transition: 0.2s ease-in-out;
+}
+
+.logout-button:hover .logout-icon {
+  transform: scale(1.1);
+  color: #ff3333;
+}
 </style>
