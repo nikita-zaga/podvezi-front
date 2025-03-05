@@ -8,7 +8,7 @@ export function useRegistration() {
     const router = useRouter();
 
     const driverInfo = ref({
-        experience: null,
+        experienceYears: null,
         car: {
             model: "",
             number: "",
@@ -33,7 +33,7 @@ export function useRegistration() {
         };
 
         if (selectedRole.value.id === "driver") {
-            body.experience = driverInfo.value.experience;
+            body.experienceYears = driverInfo.value.experienceYears;
             body.car = driverInfo.value.car;
         }
 
