@@ -49,7 +49,7 @@
               id="drivingExperience"
               class="border p-2 w-full rounded"
               placeholder="Укажите годы опыта"
-              v-model.number="driverInfo.experience"
+              v-model.number="driverInfo.experienceYears"
           />
         </div>
 
