@@ -57,11 +57,8 @@
       >
         Отмена
       </button>
-      <button
-          type="submit"
-          class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-      >
-        Сохранить
+      <button type="submit" :disabled="loading" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        {{ loading ? "Создание..." : "Создать поездку" }}
       </button>
     </div>
   </form>
@@ -71,18 +68,20 @@
 import {useCreateDriverTrip} from "../composables/useCreateDriverTrip.js";
 
 export default {
-  setup() {
-    const {tripData, handleSubmit} = useCreateDriverTrip();
+  emits: ["close"],
+  setup(_, { emit }) {
+    const { tripData, handleSubmit } = useCreateDriverTrip();
 
-    const submitForm = () => {
-      console.log("Данные формы перед отправкой:", tripData); // Проверяем данные
-      handleSubmit(); // Вызываем handleSubmit для отправки
+    const submitForm = async () => {
+      const success = await handleSubmit();
+      if (success) {
+        emit("close");
+      }
     };
-
 
     return {
       tripData,
-      submitForm,
+      submitForm
     };
   },
 };

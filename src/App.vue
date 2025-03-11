@@ -23,6 +23,5 @@ export default {
   align-items: center;
   background-color: #f3f4f6; /* Tailwind bg-gray-100 */
 }
+
 </style>
-
-

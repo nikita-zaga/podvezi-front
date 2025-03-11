@@ -21,14 +21,21 @@
     </header>
 
     <!-- Контейнер с формой и кнопкой -->
-    <section class="flex items-start justify-between bg-white shadow rounded p-6 mb-8 max-w-4xl mx-auto">
+    <section
+        class="flex items-start justify-between bg-white shadow rounded p-6 mb-8 max-w-4xl mx-auto"
+    >
       <!-- Форма выбора направлений -->
       <div class="flex-1">
-        <h2 class="text-xl font-medium text-gray-700 mb-4">Выберите направления</h2>
+        <h2 class="text-xl font-medium text-gray-700 mb-4">
+          Выберите направления
+        </h2>
         <form @submit.prevent="searchTrips">
           <div class="flex flex-col space-y-4">
             <div>
-              <label for="from" class="block text-gray-600 font-medium mb-1">Откуда</label>
+              <label
+                  for="from"
+                  class="block text-gray-600 font-medium mb-1"
+              >Откуда</label>
               <input
                   id="from"
                   v-model="from"
@@ -38,7 +45,10 @@
               />
             </div>
             <div>
-              <label for="to" class="block text-gray-600 font-medium mb-1">Куда</label>
+              <label
+                  for="to"
+                  class="block text-gray-600 font-medium mb-1"
+              >Куда</label>
               <input
                   id="to"
                   v-model="to"
@@ -63,40 +73,95 @@
           class="ml-4 flex items-center justify-center w-12 h-12 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600 transition"
           title="Добавить поездку"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+        >
+          <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+          />
         </svg>
       </button>
     </section>
 
     <!-- Модальное окно -->
-    <div v-if="isFormVisible" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-      <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-        <button @click="closeCreateTripForm" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+    <div
+        v-if="isFormVisible"
+        class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
+    >
+      <div
+          class="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg"
+      >
+        <button
+            @click="closeCreateTripForm"
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+        >
           ✖
         </button>
-        <CreateDriverTrip @close="closeCreateTripForm" />
+        <CreateDriverTrip @close="handleCloseEvent" />
       </div>
     </div>
 
-
     <!-- Список активных объявлений -->
     <section>
-      <h2 class="text-xl font-medium text-gray-700 mb-4 text-center">Активные объявления</h2>
-      <div v-if="loading" class="text-center text-gray-500">Загрузка...</div>
-      <div v-else-if="trips.length === 0" class="text-center text-gray-500">
+      <h2
+          class="text-xl font-medium text-gray-700 mb-4 text-center"
+      >Активные объявления</h2>
+      <div
+          v-if="loading"
+          class="text-center text-gray-500"
+      >Загрузка...</div>
+      <div
+          v-else-if="trips.length === 0"
+          class="text-center text-gray-500"
+      >
         Пока нет активных объявлений.
       </div>
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div
+          v-else
+          class="grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
         <div
             v-for="(trip, index) in trips"
             :key="index"
             class="bg-white shadow rounded p-4"
         >
-          <h3 class="text-lg font-semibold text-gray-800">{{ trip.title }}</h3>
-          <p class="text-gray-600">Дата: {{ trip.date }}</p>
-          <p class="text-gray-600">Направление: {{ trip.direction }}</p>
-          <p class="text-sm text-gray-500">Цена: {{ trip.price }} ₽</p>
+          <h3>
+            <span
+                class="font-semibold text-gray-800"
+            >Маршрут:</span> {{ trip.route }}
+          </h3>
+          <p class="text-gray-600">
+            <span
+                class="font-semibold text-gray-800"
+            >Дата и время:</span> {{ new Date(trip.startTime).toLocaleString() }}
+          </p>
+          <p class="text-gray-600">
+            <span
+                class="font-semibold text-gray-800"
+            >Цена:</span> {{ trip.price }} ₽
+          </p>
+          <p class="text-gray-600">
+            <span
+                class="font-semibold text-gray-800"
+            >Свободных мест:</span> {{ trip.countFreePlaces }}
+          </p>
+          <p class="text-gray-600">
+            <span
+                class="font-semibold text-gray-800"
+            >Водитель:</span> Опыт {{ trip.driverExperience }} лет, {{ trip.driverTrips }} поездок.
+          </p>
+          <p class="text-gray-600">
+            <span
+                class="font-semibold text-gray-800"
+            >Машина:</span> {{ trip.carModel }} ({{ trip.carNumber }}, {{ trip.carColor }})
+          </p>
         </div>
       </div>
     </section>
@@ -107,7 +172,7 @@
 import useUserOrder from '../composables/userOrders';
 import { useAuth } from "../composables/useAuth";
 import CreateDriverTrip from './CreateDriverTrip.vue';
-import {ref} from "vue";
+import { ref, onMounted } from "vue";
 
 export default {
   components: {
@@ -116,7 +181,7 @@ export default {
 
   setup() {
     // Импорт логики
-    const {from, to, trips, loading, searchTrips} = useUserOrder();
+    const { from, to, trips, loading, searchTrips } = useUserOrder();
     const { logout } = useAuth();
 
     // Логика отображения модального окна
@@ -130,6 +195,15 @@ export default {
       isFormVisible.value = false;
     };
 
+    const handleCloseEvent = () => {
+      closeCreateTripForm(); // Закрываем модальное окно
+      searchTrips(); // Обновляем список поездок
+    };
+
+    onMounted(() => {
+      searchTrips(); // Загружаем данные при открытии страницы
+    });
+
     // Экспорт данных и методов в шаблон
     return {
       logout,
@@ -141,6 +215,7 @@ export default {
       isFormVisible,
       openCreateTripForm,
       closeCreateTripForm,
+      handleCloseEvent
     };
   },
 };
@@ -168,4 +243,5 @@ export default {
   transform: scale(1.1);
   color: #ff3333;
 }
+
 </style>

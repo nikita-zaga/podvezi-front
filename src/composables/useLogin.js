@@ -1,6 +1,8 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuth } from "./useAuth.js";
+import {useToast} from "vue-toastification";
+import 'vue-toastification/dist/index.css'
 
 export function useLogin() {
     const username = ref("");
@@ -8,6 +10,7 @@ export function useLogin() {
     const error = ref(null);
     const router = useRouter();
     const { isAuthenticated } = useAuth();
+    const toast = useToast();
 
     onMounted(() => {
         if (isAuthenticated.value) {
@@ -31,7 +34,7 @@ export function useLogin() {
             const data = await response.json();
             localStorage.setItem("authToken", data.token);
 
-            alert("Вход выполнен!");
+            toast.success("Вход выполнен успешно!", { timeout: 2000 })
             router.push("/orders");
         } catch (err) {
             error.value = err.message;
