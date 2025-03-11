@@ -1,6 +1,7 @@
 import { reactive } from "vue";
-import { useRouter } from "vue-router";
 import { getAuthToken } from "../utils/auth";
+import {useToast} from "vue-toastification";
+import 'vue-toastification/dist/index.css'
 
 export function useCreateDriverTrip() {
     // Создаём реактивный объект с полями
@@ -10,8 +11,7 @@ export function useCreateDriverTrip() {
         price: "",
         countFreePlaces: "",
     });
-
-    const router = useRouter();
+    const toast = useToast();
 
     const handleSubmit = async () => {
         console.log("Начало handleSubmit в useCreateDriverTrip.js");
@@ -37,15 +37,18 @@ export function useCreateDriverTrip() {
             });
 
             if (response.ok) {
-                alert("Поездка успешно создана!");
-                router.push("/orders"); // Перенаправляем на /orders
+                toast.success("Поездка успешно добавлена!", { timeout: 3000 });
+                console.log("Успешный запрос, показываем уведомление");
+                return true;
             } else {
-                const error = await response.json();
-                alert(`Ошибка: ${error.message || "Не удалось создать поездку"}`);
+                toast.error("Ошибка при создании поездки", { timeout: 3000 });
+                console.log("Ошибка при создании поездки", err);
+                return false;
             }
         } catch (err) {
+            toast.error("Ошибка при создании поездки", { timeout: 3000 });
             console.log("Ошибка при создании поездки", err);
-            alert("Ошибка сервера");
+            return false;
         }
     };
 
