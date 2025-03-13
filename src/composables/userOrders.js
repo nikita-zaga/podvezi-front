@@ -2,10 +2,9 @@ import { reactive, ref } from 'vue';
 import {getAuthToken} from "../utils/auth.js";
 
 export default function useUserOrder() {
-    const from = ref(""); // Город отправления
-    const to = ref(""); // Город назначения
     const trips = reactive([]); // Список активных поездок
-    const loading = ref(false); // Состояние загрузки
+    const loading = ref(false);
+    const routeSystemName = ref("");
 
     // Функция для поиска поездок
     const searchTrips = async () => {
@@ -14,7 +13,14 @@ export default function useUserOrder() {
         try {
             const token = getAuthToken();
 
-            const response = await fetch('http://localhost:8080/trip/trips', {
+            let url = new URL('http://localhost:8080/trip/trips');
+
+            console.log("Данные от маршрута routeSystemName:", routeSystemName);
+            if (routeSystemName.value) {
+                url.searchParams.append("routeSystemName", routeSystemName.value);
+            }
+
+            const response = await fetch(url.toString(), {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -53,8 +59,7 @@ export default function useUserOrder() {
     };
 
     return {
-        from,
-        to,
+        routeSystemName,
         trips,
         loading,
         searchTrips,
