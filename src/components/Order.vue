@@ -27,36 +27,29 @@
       <!-- Форма выбора направлений -->
       <div class="flex-1">
         <h2 class="text-xl font-medium text-gray-700 mb-4">
-          Выберите направления
+          Выберите маршрут
         </h2>
-        <form @submit.prevent="searchTrips">
+        <form @submit.prevent="handleSearchTrips">
           <div class="flex flex-col space-y-4">
+            <!-- Поле выбора маршрута -->
             <div>
               <label
-                  for="from"
+                  for="route"
                   class="block text-gray-600 font-medium mb-1"
-              >Откуда</label>
-              <input
-                  id="from"
-                  v-model="from"
-                  type="text"
-                  placeholder="Введите город отправления"
+              >Маршрут</label>
+              <select
+                  id="route"
+                  v-model="route"
+                  :disabled="loadingRoutes"
                   class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500"
-              />
+              >
+                <option value="" disabled selected>Выберите маршрут</option>
+                <option v-for="routeOption in routes" :key="routeOption.systemName" :value="routeOption.systemName">
+                  {{ routeOption.labelName }}
+                </option>
+              </select>
             </div>
-            <div>
-              <label
-                  for="to"
-                  class="block text-gray-600 font-medium mb-1"
-              >Куда</label>
-              <input
-                  id="to"
-                  v-model="to"
-                  type="text"
-                  placeholder="Введите город назначения"
-                  class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500"
-              />
-            </div>
+
             <button
                 type="submit"
                 class="bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 transition w-full"
@@ -173,6 +166,7 @@ import useUserOrder from '../composables/userOrders';
 import { useAuth } from "../composables/useAuth";
 import CreateDriverTrip from './CreateDriverTrip.vue';
 import { ref, onMounted } from "vue";
+import { useRoutes } from "../composables/useRoutes.js";
 
 export default {
   components: {
@@ -181,8 +175,15 @@ export default {
 
   setup() {
     // Импорт логики
-    const { from, to, trips, loading, searchTrips } = useUserOrder();
+    const { routeSystemName, trips, loading, searchTrips } = useUserOrder();
+    const { routes, fetchRoutes, loadingRoutes, error } = useRoutes();
     const { logout } = useAuth();
+    const route = ref("");
+
+    const handleSearchTrips = () => {
+      routeSystemName.value = route.value;
+      searchTrips(); // Выполняем поиск
+    };
 
     // Логика отображения модального окна
     const isFormVisible = ref(false);
@@ -201,21 +202,26 @@ export default {
     };
 
     onMounted(() => {
-      searchTrips(); // Загружаем данные при открытии страницы
+      searchTrips();
+      fetchRoutes();
     });
 
     // Экспорт данных и методов в шаблон
     return {
       logout,
-      from,
-      to,
       trips,
       loading,
       searchTrips,
       isFormVisible,
+      route,
+      routes,
+      loadingRoutes,
+      error,
+      fetchRoutes,
       openCreateTripForm,
       closeCreateTripForm,
-      handleCloseEvent
+      handleCloseEvent,
+      handleSearchTrips
     };
   },
 };

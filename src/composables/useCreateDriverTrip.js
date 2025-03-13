@@ -6,7 +6,7 @@ import 'vue-toastification/dist/index.css'
 export function useCreateDriverTrip() {
     // Создаём реактивный объект с полями
     const tripData = reactive({
-        route: "",
+        routeSystemName: "",
         date: "",
         price: "",
         countFreePlaces: "",
@@ -18,7 +18,7 @@ export function useCreateDriverTrip() {
 
         // Формируем объект для отправки из tripData
         const body = {
-            route: tripData.route,
+            routeSystemName: tripData.routeSystemName,
             date: tripData.date,
             price: tripData.price,
             countFreePlaces: tripData.countFreePlaces,

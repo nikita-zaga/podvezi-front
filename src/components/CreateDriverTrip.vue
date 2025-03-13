@@ -6,13 +6,14 @@
     <div class="mb-4">
       <label for="route" class="block mb-2 text-sm font-medium">Маршрут</label>
       <select
-          v-model="tripData.route"
+          v-model="tripData.routeSystemName"
           id="route"
           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500"
       >
         <option value="" disabled selected>Выберите маршрут</option>
-        <option value="K-KC">Киров - Кирово-Чепецк</option>
-        <option value="KC-K">Кирово-Чепецк - Киров</option>
+        <option v-for="route in routes" :key="route.systemName" :value="route.systemName">
+          {{ route.labelName }}
+        </option>
       </select>
     </div>
 
@@ -66,11 +67,19 @@
 
 <script>
 import {useCreateDriverTrip} from "../composables/useCreateDriverTrip.js";
+import {useRoutes} from "../composables/useRoutes.js";
+import {onMounted } from "vue";
 
 export default {
   emits: ["close"],
   setup(_, { emit }) {
     const { tripData, handleSubmit } = useCreateDriverTrip();
+
+    const { routes, fetchRoutes, loadingRoutes, error } = useRoutes();
+
+    onMounted(() => {
+      fetchRoutes();
+    });
 
     const submitForm = async () => {
       const success = await handleSubmit();
@@ -81,7 +90,11 @@ export default {
 
     return {
       tripData,
-      submitForm
+      routes,
+      fetchRoutes,
+      loadingRoutes,
+      error,
+      submitForm,
     };
   },
 };
