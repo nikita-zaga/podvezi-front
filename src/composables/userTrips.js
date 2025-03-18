@@ -1,7 +1,7 @@
 import { reactive, ref } from 'vue';
 import {getAuthToken} from "../utils/auth.js";
 
-export default function useUserOrder() {
+export default function useUserTrip() {
     const trips = reactive([]); // Список активных поездок
     const loading = ref(false);
     const routeSystemName = ref("");
