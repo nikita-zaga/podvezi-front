@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import useUserOrder from '../composables/userOrders';
+import useUserTrip from '../composables/userTrips.js';
 import { useAuth } from "../composables/useAuth";
 import CreateDriverTrip from './CreateDriverTrip.vue';
 import { ref, onMounted } from "vue";
@@ -175,7 +175,7 @@ export default {
 
   setup() {
     // Импорт логики
-    const { routeSystemName, trips, loading, searchTrips } = useUserOrder();
+    const { routeSystemName, trips, loading, searchTrips } = useUserTrip();
     const { routes, fetchRoutes, loadingRoutes, error } = useRoutes();
     const { logout } = useAuth();
     const route = ref("");

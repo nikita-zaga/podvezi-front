@@ -14,7 +14,7 @@ export function useLogin() {
 
     onMounted(() => {
         if (isAuthenticated.value) {
-            router.push("/orders");
+            router.push("/trips");
         }
     });
 
@@ -35,7 +35,7 @@ export function useLogin() {
             localStorage.setItem("authToken", data.token);
 
             toast.success("Вход выполнен успешно!", { timeout: 2000 })
-            router.push("/orders");
+            router.push("/trips");
         } catch (err) {
             error.value = err.message;
         }
